@@ -16,19 +16,29 @@ function App() {
       if (!domain) return;
 
       if (!shopStatus[domain]) {
-        shopStatus[domain] = { isUninstalled: false, lastUninstallRow: null };
+        shopStatus[domain] = {
+          isUninstalled: false,
+          isClosed: false,
+          lastUninstallRow: null
+        };
       }
 
-      if (row.Event === 'Installed') {
+      const event = row.Event ? row.Event.trim() : '';
+
+      if (event === 'Installed') {
         shopStatus[domain].isUninstalled = false;
-      } else if (row.Event === 'Uninstalled') {
+      } else if (event === 'Uninstalled') {
         shopStatus[domain].isUninstalled = true;
         shopStatus[domain].lastUninstallRow = row;
+      } else if (event === 'Store closed') {
+        shopStatus[domain].isClosed = true;
+      } else if (event === 'Store re-opened') {
+        shopStatus[domain].isClosed = false;
       }
     });
 
     const uninstalledShops = Object.values(shopStatus)
-      .filter((status) => status.isUninstalled)
+      .filter((status) => status.isUninstalled && !status.isClosed)
       .map((status) => status.lastUninstallRow);
 
     if (uninstalledShops.length > 0) {
