@@ -38,7 +38,7 @@ function App() {
     });
 
     const uninstalledShops = Object.values(shopStatus)
-      .filter((status) => status.isUninstalled && !status.isClosed)
+      .filter((status) => status.isUninstalled && !status.isClosed && status.lastUninstallRow['Shop name'] !== 'REDACTED')
       .map((status) => status.lastUninstallRow);
 
     if (uninstalledShops.length > 0) {
